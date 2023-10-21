@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    username: postgres
+    password: password
+    url: jdbc:postgresql/localhost:5432/financas_db
+  flyway:
+    enabled: true
+  jpa:
+    show-sql: true
