@@ -1,6 +1,5 @@
 package com.neuralnet.financasapi.domain.model.despesa;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.neuralnet.financasapi.domain.model.Categoria;
 import com.neuralnet.financasapi.domain.model.Gestor;
 import jakarta.persistence.*;
@@ -39,7 +38,7 @@ public class Despesa {
     private Categoria categoria;
 
     @OneToOne(mappedBy = "despesa", cascade = CascadeType.ALL)
-    @JoinColumn(name = "recorrencia_id")
+    @PrimaryKeyJoinColumn
     private Recorrencia recorrencia;
 
     @Builder.Default

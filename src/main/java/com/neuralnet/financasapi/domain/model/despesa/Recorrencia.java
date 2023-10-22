@@ -14,9 +14,8 @@ import lombok.NoArgsConstructor;
 public class Recorrencia {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "recorrencia_id")
-    private Integer id;
+    @Column(name = "despesa_id")
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     private Frequencia frequencia;
@@ -24,6 +23,7 @@ public class Recorrencia {
     private int quantidade;
 
     @OneToOne
+    @MapsId
     @JoinColumn(name = "despesa_id")
     private Despesa despesa;
 
