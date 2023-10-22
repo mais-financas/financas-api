@@ -3,7 +3,6 @@ package com.neuralnet.financasapi.domain.service;
 import com.neuralnet.financasapi.domain.model.Categoria;
 import com.neuralnet.financasapi.domain.model.Gestor;
 import com.neuralnet.financasapi.domain.model.despesa.Despesa;
-import com.neuralnet.financasapi.domain.repository.CategoriaRepository;
 import com.neuralnet.financasapi.domain.repository.DespesaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,11 @@ public class DespesaService {
     private final DespesaRepository despesaRepository;
     private final GestorService gestorService;
     private final CategoriaService categoriaService;
+
+    public Despesa findById(Long despesaId) {
+        return despesaRepository.findById(despesaId)
+                .orElseThrow(() -> new IllegalStateException("Nenhuma despesa com id " + despesaId));
+    }
 
     @Transactional
     public Despesa save(Despesa despesa) {

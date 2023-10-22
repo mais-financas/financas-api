@@ -8,8 +8,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -42,7 +45,22 @@ public class Despesa {
     private Recorrencia recorrencia;
 
     @Builder.Default
-    @OneToMany(mappedBy = "despesa", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "despesa", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Registro> registros = new ArrayList<>();
+
+    public Registro addRegistro(BigDecimal valor, Date data) {
+        Registro registro = Registro.builder()
+                .valor(valor)
+                .data(data)
+                .despesa(this)
+                .build();
+
+        this.getRegistros().add(registro);
+        return registro;
+    }
+
+    public void removerRegistro(Long registroId) {
+        registros.removeIf(registro -> Objects.equals(registro.getId(), registroId));
+    }
 
 }
