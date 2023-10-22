@@ -1,14 +1,20 @@
 package com.neuralnet.financasapi.domain.model.despesa;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.neuralnet.financasapi.domain.model.Categoria;
 import com.neuralnet.financasapi.domain.model.Gestor;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 @Entity(name = "despesa")
 public class Despesa {
@@ -32,12 +38,11 @@ public class Despesa {
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
 
-    // TODO: Cadastrar despesa com recorrencia
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "despesa_id")
+    @OneToOne(mappedBy = "despesa", cascade = CascadeType.ALL)
+    @JoinColumn(name = "recorrencia_id")
     private Recorrencia recorrencia;
 
-    // TODO: Utilizar DTOs para respostas da API
+    @Builder.Default
     @OneToMany(mappedBy = "despesa", cascade = CascadeType.ALL)
     List<Registro> registros = new ArrayList<>();
 

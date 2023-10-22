@@ -32,4 +32,7 @@ public class Gestor {
     //TODO: Proteger senha
     private String senha;
 
+    public Gestor(UUID gestorId) {
+        this.id = gestorId;
+    }
 }

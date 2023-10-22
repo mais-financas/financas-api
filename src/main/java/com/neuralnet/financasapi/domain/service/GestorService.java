@@ -13,6 +13,11 @@ public class GestorService {
 
     private final GestorRepository gestorRepository;
 
+    public Gestor findById(UUID gestorId) {
+        return gestorRepository.findById(gestorId)
+                .orElseThrow(() -> new IllegalStateException("Gestor não encontrado"));
+    }
+
     public Gestor save(Gestor gestor) {
         return gestorRepository.save(gestor);
     }
@@ -20,5 +25,4 @@ public class GestorService {
     public void deleteById(UUID gestorId) {
         gestorRepository.deleteById(gestorId);
     }
-
 }
