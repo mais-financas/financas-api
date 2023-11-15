@@ -2,9 +2,12 @@ package com.neuralnet.financasapi.api.controller;
 
 
 import com.neuralnet.financasapi.api.mapper.RendaMapper;
+import com.neuralnet.financasapi.api.model.despesa.input.DespesaSyncInput;
 import com.neuralnet.financasapi.api.model.renda.RendaModel;
 import com.neuralnet.financasapi.api.model.renda.input.RendaInput;
+import com.neuralnet.financasapi.api.model.renda.input.RendaSyncInput;
 import com.neuralnet.financasapi.domain.model.Renda;
+import com.neuralnet.financasapi.domain.model.despesa.Despesa;
 import com.neuralnet.financasapi.domain.repository.RendaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
@@ -42,4 +45,12 @@ public class RendaController {
         return ResponseEntity.ok(rendaMapper.toModel(renda));
     }
 
+    @PostMapping("/sincronizar")
+    public ResponseEntity<Void> sincronizar(@RequestBody List<RendaSyncInput> rendasInput) {
+        List<Renda> rendas = rendasInput.stream().map(RendaSyncInput::toEntity).toList();
+
+        rendaRepository.saveAll(rendas);
+
+        return ResponseEntity.noContent().build();
+    }
 }

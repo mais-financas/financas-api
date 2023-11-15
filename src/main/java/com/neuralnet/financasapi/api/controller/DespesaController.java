@@ -3,6 +3,7 @@ package com.neuralnet.financasapi.api.controller;
 import com.neuralnet.financasapi.api.mapper.DespesaMapper;
 import com.neuralnet.financasapi.api.model.despesa.DespesaModel;
 import com.neuralnet.financasapi.api.model.despesa.input.DespesaInput;
+import com.neuralnet.financasapi.api.model.despesa.input.DespesaSyncInput;
 import com.neuralnet.financasapi.api.model.despesa.input.RegistroInput;
 import com.neuralnet.financasapi.domain.model.despesa.Despesa;
 import com.neuralnet.financasapi.domain.model.despesa.Recorrencia;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -37,10 +39,8 @@ public class DespesaController {
     public ResponseEntity<DespesaModel> save(@RequestBody DespesaInput despesaInput) {
         Despesa despesa = despesaInput.toEntity();
 
-        if (despesaInput.recorrencia() != null) {
-            Recorrencia recorrencia = despesaInput.recorrencia().toEntity(despesa);
-            despesa.setRecorrencia(recorrencia);
-        }
+        Recorrencia recorrencia = despesaInput.recorrencia().toEntity(despesa);
+        despesa.setRecorrencia(recorrencia);
 
         Registro registro = despesaInput.registro().toEntity(despesa);
         despesa.setRegistros(List.of(registro));
@@ -80,4 +80,17 @@ public class DespesaController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/sincronizar")
+    public ResponseEntity<Void> sincronizar(@RequestBody List<DespesaSyncInput> despesasInput) {
+        List<Despesa> despesas = despesasInput.stream().map(DespesaSyncInput::toEntity).toList();
+
+        despesas.forEach(despesa -> {
+            despesa.getRecorrencia().setDespesa(despesa);
+            despesa.getRegistros().forEach(registro -> registro.setDespesa(despesa));
+        });
+
+        despesaService.sincronizar(despesas);
+
+        return ResponseEntity.noContent().build();
+    }
 }

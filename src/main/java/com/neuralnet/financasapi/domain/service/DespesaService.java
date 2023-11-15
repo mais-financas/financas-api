@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class DespesaService {
@@ -23,6 +26,20 @@ public class DespesaService {
 
     @Transactional
     public Despesa save(Despesa despesa) {
+        Despesa despesaCompleta = configurarDespesaJpa(despesa);
+        despesaRepository.save(despesaCompleta);
+
+        return despesaCompleta;
+    }
+
+    @Transactional
+    public void sincronizar(List<Despesa> despesas) {
+        List<Despesa> despesasAtualizadas = despesas.stream().map(this::configurarDespesaJpa).toList();
+
+        despesaRepository.saveAll(despesasAtualizadas);
+    }
+
+    private Despesa configurarDespesaJpa(Despesa despesa) {
         Gestor gestor = gestorService.findById(despesa.getGestor().getId());
         despesa.setGestor(gestor);
 
@@ -31,9 +48,6 @@ public class DespesaService {
 
         despesa.getRegistros().forEach(registro -> registro.setDespesa(despesa));
 
-        despesaRepository.save(despesa);
-
         return despesa;
     }
-
 }
