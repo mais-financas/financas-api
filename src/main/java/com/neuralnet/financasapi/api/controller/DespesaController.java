@@ -49,6 +49,23 @@ public class DespesaController {
         return ResponseEntity.ok(despesaMapper.toModel(despesa));
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/setup")
+    public ResponseEntity<List<DespesaModel>> setup(@RequestBody List<DespesaInput> despesasInput) {
+        List<Despesa> despesas = despesasInput.stream().map(despesaInput -> {
+            Despesa despesa = despesaInput.toEntity();
+            Recorrencia recorrencia = despesaInput.recorrencia().toEntity(despesa);
+            despesa.setRecorrencia(recorrencia);
+            Registro registro = despesaInput.registro().toEntity(despesa);
+            despesa.setRegistros(List.of(registro));
+
+            return despesa;
+        }).toList();
+
+        List<Despesa> despesasSalvas = despesaService.saveAll(despesas);
+        return ResponseEntity.ok(despesaMapper.toModel(despesasSalvas));
+    }
+
     @GetMapping("/{despesaId}")
     public ResponseEntity<DespesaModel> findById(@PathVariable("despesaId") Long despesaId) {
         return despesaRepository.findById(despesaId)

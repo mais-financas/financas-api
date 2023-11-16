@@ -1,9 +1,8 @@
 package com.neuralnet.financasapi.api.mapper;
 
-import com.neuralnet.financasapi.api.model.despesa.CategoriaResumoModel;
 import com.neuralnet.financasapi.api.model.despesa.DespesaModel;
 import com.neuralnet.financasapi.api.model.despesa.RecorrenciaModel;
-import com.neuralnet.financasapi.api.model.gestor.GestorResumoModel;
+import com.neuralnet.financasapi.api.model.despesa.RegistroModel;
 import com.neuralnet.financasapi.domain.model.despesa.Despesa;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +17,10 @@ public class DespesaMapper {
                 despesa.getId(),
                 despesa.getNome(),
                 despesa.isDefinirLembrete(),
-                GestorResumoModel.fromEntity(despesa.getGestor()),
-                CategoriaResumoModel.fromEntity(despesa.getCategoria()),
-                RecorrenciaModel.fromEntity(despesa.getRecorrencia())
+                despesa.getGestor().getId(),
+                despesa.getCategoria().getId(),
+                RecorrenciaModel.fromEntity(despesa.getRecorrencia()),
+                RegistroModel.registrosFromEntity(despesa.getRegistros())
         );
     }
 

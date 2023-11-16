@@ -1,7 +1,9 @@
 package com.neuralnet.financasapi.api.model.despesa;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.neuralnet.financasapi.api.model.gestor.GestorResumoModel;
+
+import java.util.List;
+import java.util.UUID;
 
 public record DespesaModel(
         @JsonProperty("id")
@@ -13,10 +15,14 @@ public record DespesaModel(
         @JsonProperty("definir_lembrete")
         boolean definirLembrete,
 
-        GestorResumoModel gestor,
+        @JsonProperty("gestor_id")
+        UUID gestorId,
 
-        CategoriaResumoModel categoria,
+        @JsonProperty("categoria_id")
+        Integer categoriaId,
 
-        RecorrenciaModel recorrencia
+        RecorrenciaModel recorrencia,
+
+        List<RegistroModel> registros
 ) {
 }

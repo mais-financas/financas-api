@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -27,9 +26,15 @@ public class DespesaService {
     @Transactional
     public Despesa save(Despesa despesa) {
         Despesa despesaCompleta = configurarDespesaJpa(despesa);
-        despesaRepository.save(despesaCompleta);
 
-        return despesaCompleta;
+        return despesaRepository.save(despesaCompleta);
+    }
+
+    @Transactional
+    public List<Despesa> saveAll(List<Despesa> despesas) {
+        List<Despesa> despesasCompletas = despesas.stream().map(this::configurarDespesaJpa).toList();
+
+        return despesaRepository.saveAll(despesasCompletas);
     }
 
     @Transactional
