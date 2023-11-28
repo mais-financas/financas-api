@@ -73,6 +73,21 @@ public class DespesaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+
+    @PatchMapping("/{despesaId}/alternar-lembrete")
+    public ResponseEntity<DespesaModel> toggleReminder(
+            @PathVariable("despesaId") Long despesaId) {
+        if (!despesaRepository.existsById(despesaId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Despesa despesa = despesaService.findById(despesaId);
+        despesa.setDefinirLembrete(!despesa.isDefinirLembrete());
+        despesaRepository.save(despesa);
+
+        return ResponseEntity.ok(despesaMapper.toModel(despesa));
+    }
+
     @PatchMapping("/{despesaId}")
     public ResponseEntity<DespesaModel> update(
             @PathVariable("despesaId") Long despesaId,
