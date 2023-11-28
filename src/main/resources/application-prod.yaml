@@ -5,3 +5,7 @@ spring:
     url: ${DB_URL}
   flyway:
     enabled: true
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET}
