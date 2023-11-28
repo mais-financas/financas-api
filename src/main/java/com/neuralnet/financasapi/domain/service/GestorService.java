@@ -19,7 +19,7 @@ public class GestorService {
     }
 
     public Gestor save(Gestor gestor) {
-        if (gestorRepository.existsByEmail(gestor.getEmail())) {
+        if (gestor.getId() == null && gestorRepository.existsByEmail(gestor.getEmail())) {
             throw new IllegalStateException("Já existe um gestor com esse email");
         }
         return gestorRepository.save(gestor);

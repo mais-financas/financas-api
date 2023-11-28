@@ -10,7 +10,7 @@ import java.util.UUID;
 @Repository
 public interface GestorRepository extends JpaRepository<Gestor, UUID> {
 
-    Optional<Gestor> findByEmailAndSenha(String email, String senha);
+    Optional<Gestor> findByEmail(String email);
 
     boolean existsByEmail(String email);
 }

@@ -9,9 +9,12 @@ import com.neuralnet.financasapi.domain.service.GestorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class GestorController {
     private final GestorService gestorService;
     private final GestorRepository gestorRepository;
     private final GestorMapper gestorMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping
     public List<GestorModel> listAll() {
@@ -35,21 +39,22 @@ public class GestorController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public ResponseEntity<GestorModel> save(@RequestBody GestorInput gestorInput) {
-        Gestor gestor = gestorService.save(gestorInput.toEntity());
-
-        return ResponseEntity.ok(gestorMapper.toModel(gestor));
-    }
-
     @PatchMapping("/{gestorId}")
     public ResponseEntity<GestorModel> update(@PathVariable("gestorId") UUID gestorId, @RequestBody GestorInput gestorInput) {
-        if (!gestorRepository.existsById(gestorId)) {
+        Optional<Gestor> gestorOptional = gestorRepository.findById(gestorId);
+        if (gestorOptional.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        Gestor gestor = gestorService.save(gestorInput.toEntity(gestorId));
+        if (!Objects.equals(gestorInput.email(), gestorOptional.get().getEmail())) {
+            return ResponseEntity.badRequest().build();
+        }
+        Gestor gestor = gestorService.save(Gestor.builder()
+                .id(gestorId)
+                .nome(gestorInput.nome())
+                .email(gestorInput.email())
+                .senha(passwordEncoder.encode(gestorInput.senha()))
+                .build());
         return ResponseEntity.ok(gestorMapper.toModel(gestor));
     }
 
