@@ -1,14 +1,11 @@
 package com.neuralnet.financasapi.api.controller;
 
 import com.neuralnet.financasapi.api.mapper.GestorMapper;
-import com.neuralnet.financasapi.api.model.auth.LoginResponse;
 import com.neuralnet.financasapi.api.model.auth.input.LoginInput;
 import com.neuralnet.financasapi.api.model.gestor.GestorModel;
 import com.neuralnet.financasapi.api.model.gestor.input.GestorInput;
 import com.neuralnet.financasapi.domain.model.Gestor;
-import com.neuralnet.financasapi.domain.security.JwtService;
 import com.neuralnet.financasapi.domain.service.AuthService;
-import com.neuralnet.financasapi.domain.service.GestorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,15 +28,16 @@ public class AuthController {
     private final GestorMapper gestorMapper;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+//    private final JwtService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginInput loginInput) {
+    public ResponseEntity<GestorModel> login(@RequestBody LoginInput loginInput) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(loginInput.email(), loginInput.senha());
         Authentication auth = authenticationManager.authenticate(usernamePassword);
 
-        String token = jwtService.generateToken((Gestor) auth.getPrincipal());
-        return ResponseEntity.ok(new LoginResponse(token));
+//        String token = jwtService.generateToken((Gestor) auth.getPrincipal());
+        Gestor gestor = (Gestor) authService.loadUserByUsername(loginInput.email());
+        return ResponseEntity.ok(gestorMapper.toModel(gestor));
     }
 
     @ResponseStatus(HttpStatus.CREATED)

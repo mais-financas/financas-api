@@ -14,7 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
+/*@Component
 @RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
 
@@ -39,4 +39,4 @@ public class SecurityFilter extends OncePerRequestFilter {
         return authHeader != null ? authHeader.replace("Bearer ", "") : null;
     }
 
-}
+}*/
